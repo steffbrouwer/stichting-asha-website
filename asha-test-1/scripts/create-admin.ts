@@ -30,20 +30,20 @@ async function createAdminUser() {
       return;
     }
 
-    const userExists = existingUsers.users.some(user => user.email === 'stage.steff@gmail.com');
+    const userExists = existingUsers.users.some(user => user.email === 'admin@asha.nl');
 
     if (userExists) {
-      console.log('User stage.steff@gmail.com already exists. Skipping creation.');
+      console.log('User admin@asha.nl already exists. Skipping creation.');
       return;
     }
 
     // Create the admin user with email confirmation disabled
     const { data: { user }, error: createError } = await adminSupabase.auth.admin.createUser({
-      email: 'stage.steff@gmail.com',
+      email: 'admin@asha.nl',
       password: 'asha123',
       email_confirm: true,
       user_metadata: {
-        role: 'admin'
+        role: 'eigenaar'
       }
     });
 
@@ -72,15 +72,15 @@ async function createAdminUser() {
       return;
     }
 
-    // Add admin role
+    // Add eigenaar role
     const { data: roleData, error: roleError } = await adminSupabase
       .from('roles')
       .select('id')
-      .eq('name', 'admin')
+      .eq('name', 'eigenaar')
       .single();
 
     if (roleError) {
-      console.error('Error fetching admin role:', roleError.message);
+      console.error('Error fetching eigenaar role:', roleError.message);
       return;
     }
 
@@ -92,13 +92,13 @@ async function createAdminUser() {
       }]);
 
     if (roleAssignError) {
-      console.error('Error assigning admin role:', roleAssignError.message);
+      console.error('Error assigning eigenaar role:', roleAssignError.message);
       return;
     }
 
-    console.log('User added to public.users table and assigned admin role');
+    console.log('User added to public.users table and assigned eigenaar role');
     console.log('You can now log in with:');
-    console.log('Email: stage.steff@gmail.com');
+    console.log('Email: admin@asha.nl');
     console.log('Password: asha123');
 
   } catch (error) {

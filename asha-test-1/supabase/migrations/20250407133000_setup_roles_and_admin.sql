@@ -1,9 +1,9 @@
 /*
-  # Fix role structure and permissions
-
+  # Set up database structure and roles
+  
   1. Changes
     - Drop existing tables and recreate with proper structure
-    - Change admin role to eigenaar
+    - Set up eigenaar role 
     - Set up proper RLS policies
     
   2. Security
@@ -31,7 +31,7 @@ ALTER TABLE roles ENABLE ROW LEVEL SECURITY;
 -- Create roles_per_user table
 CREATE TABLE roles_per_user (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   role_id UUID NOT NULL REFERENCES roles(id) ON DELETE CASCADE,
   assigned_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(user_id, role_id)
@@ -54,6 +54,16 @@ CREATE TABLE volunteers (
 
 -- Enable RLS on volunteers
 ALTER TABLE volunteers ENABLE ROW LEVEL SECURITY;
+
+-- Create users table if it doesn't exist
+CREATE TABLE IF NOT EXISTS users (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT UNIQUE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Enable RLS on users
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
 
 -- Add RLS policies
 CREATE POLICY "Anyone can read roles"
@@ -99,6 +109,12 @@ CREATE POLICY "Eigenaar can update volunteer applications"
       AND r.name = 'eigenaar'
     )
   );
+
+CREATE POLICY "Users can read their own user record"
+  ON users
+  FOR SELECT
+  TO authenticated
+  USING (id = auth.uid());
 
 -- Insert eigenaar role
 INSERT INTO roles (name, description)
