@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@400;700&display=swap');
+@import "tailwindcss";
+
+/* Standaard kleuren */
+:root {
+  --background: #f9fafb; /* Lichte grijs (bg-gray-50) */
+  --foreground: #171717;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Donkere modus instellingen */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a; /* Zwarte achtergrond voor donkere modus */
+    --foreground: #ededed; /* Lichtgrijze tekst voor donkere modus */
+  }
+}
+
+/* Body instellingen */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Poppins', 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes scrollX {
+  0% {
+    transform: translateX(0%);
+  }
+  50% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+.animate-scroll-x {
+  animation: scrollX 130s ease-in-out infinite;
+  display: flex;
+  width: max-content;
+}
